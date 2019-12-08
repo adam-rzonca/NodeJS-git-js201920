@@ -148,8 +148,25 @@
 // 9. Dodajmy do zadania 8 zapis do pliku obiektu składającego się z nazwy użytkownika
 // oraz pobranej temperatury.
 const user = require("./user.js");
+const weather = require("./weather.js");
 const argv = require("yargs").argv;
+const fs = require("fs");
 
 const id = argv.id;
 
-user.getUserInfo(id);
+user.getUserInfo(id, user => {
+  console.log(user);
+  weather.getUserWeather(user.lat, user.lng, weather => {
+    const dataToSave = { user: user.name, temp: weather.main.temp };
+    console.log(dataToSave);
+
+    fs.writeFile("./user_weather.json", JSON.stringify(dataToSave), error => {
+      if (error) {
+        console.log(error.message);
+        return;
+      }
+
+      console.log("File saved!");
+    });
+  });
+});

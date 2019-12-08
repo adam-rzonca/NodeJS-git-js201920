@@ -1,7 +1,6 @@
 const request = require("request");
-const weather = require("./weather.js");
 
-function getUserInfo(id) {
+function getUserInfo(id, callbackFunctonForUser) {
   const userUrl = "https://jsonplaceholder.typicode.com/users/" + id;
 
   request(userUrl, (error, response, body) => {
@@ -27,7 +26,7 @@ function getUserInfo(id) {
     console.log("Lat:", user.lat);
     console.log("Lng", user.lng);
 
-    weather.getUserWeather(user);
+    callbackFunctonForUser(user);
   });
 }
 
