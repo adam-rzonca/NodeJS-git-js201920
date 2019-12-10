@@ -200,45 +200,180 @@
 // Promise.all(). Wyświetlmy ich imiona w konsoli. (id użytkowników: 2,5,7).
 // Poinformujmy iż nasz Promise został w pełni rozwiązany.
 
-const request = require("request");
+// const request = require("request");
 
-const getUser = id => {
-  const userUrl = `https://jsonplaceholder.typicode.com/users/${id}`;
+// const getUser = id => {
+//   const userUrl = `https://jsonplaceholder.typicode.com/users/${id}`;
 
-  return new Promise((resolve, reject) => {
-    request(userUrl, (error, response, body) => {
-      if (error) {
-        reject(error);
-        return;
-      }
+//   return new Promise((resolve, reject) => {
+//     request(userUrl, (error, response, body) => {
+//       if (error) {
+//         reject(error);
+//         return;
+//       }
 
-      if (response.statusCode != 200) {
-        reject("User not found");
-        return;
-      }
+//       if (response.statusCode != 200) {
+//         reject("User not found");
+//         return;
+//       }
 
-      const userInfo = JSON.parse(body);
+//       const userInfo = JSON.parse(body);
 
-      const user = {
-        name: userInfo.name,
-        lat: userInfo.address.geo.lat,
-        lng: userInfo.address.geo.lng
-      };
+//       const user = {
+//         name: userInfo.name,
+//         lat: userInfo.address.geo.lat,
+//         lng: userInfo.address.geo.lng
+//       };
 
-      resolve(user);
-    });
-  });
-};
+//       resolve(user);
+//     });
+//   });
+// };
 
-const ids = [2, 5, 7];
+// const ids = [2, 5, 7];
 
-const usersPromise = ids.map(id => getUser(id));
+// const usersPromise = ids.map(id => getUser(id));
 
-Promise.all(usersPromise)
-  .then(users => {
-    users.forEach(user => console.log(user.name));
+// Promise.all(usersPromise)
+//   .then(users => {
+//     users.forEach(user => console.log(user.name));
+//   })
+//   .catch(error => console.log(error))
+//   .finally(() => {
+//     console.log("Koniec przetwarzania!");
+//   });
+
+// 7. Dodajmy do zadania 5 zapis całego obiektu pogody do pliku wykorzystując wbudowany moduł fs
+// i funkcję writeFile. Oczywiście zadanie polega na odpowiednim dostosowaniu funkcji
+// aby obsługiwała Promise.
+
+// const request = require("request");
+// const fs = require("fs");
+
+// const getUser = id => {
+//   const userUrl = `https://jsonplaceholder.typicode.com/users/${id}`;
+
+//   return new Promise((resolve, reject) => {
+//     request(userUrl, (error, response, body) => {
+//       if (error) {
+//         reject(error);
+//         return;
+//       }
+
+//       if (response.statusCode != 200) {
+//         reject("User not found");
+//         return;
+//       }
+
+//       const userInfo = JSON.parse(body);
+
+//       const user = {
+//         name: userInfo.name,
+//         lat: userInfo.address.geo.lat,
+//         lng: userInfo.address.geo.lng
+//       };
+
+//       resolve(user);
+//     });
+//   });
+// };
+
+// const getWeather = (lat, lng) => {
+//   const wetaherUrl = `https://api.openweathermap.org/data/2.5/weather?appid=0ed761300a2725ca778c07831ae64d6e&lat=${lat}&lon=${lng}`;
+
+//   return new Promise((resolve, reject) => {
+//     request(wetaherUrl, (error, response, body) => {
+//       if (error) {
+//         reject(error);
+//         return;
+//       }
+
+//       if (response.statusCode != 200) {
+//         reject("Weather data not found... Status code:" + response.statusCode);
+//         return;
+//       }
+
+//       const weather = JSON.parse(body);
+//       resolve(weather);
+//     });
+//   });
+// };
+
+// const myWriteFile = (weather, fileName) => {
+//   return new Promise((resolve, reject) => {
+//     fs.writeFile(fileName, JSON.stringify(weather), err => {
+//       if (err) {
+//         reject(err);
+//       } else {
+//         resolve("File saved!");
+//       }
+//     });
+//   });
+// };
+
+// let id = 2;
+// getUser(id)
+//   .then(user => {
+//     console.log(user.name);
+//     return getWeather(user.lat, user.lng);
+//   })
+//   .then(weather => {
+//     console.log(weather.main.temp);
+//     return myWriteFile(weather, "./weather.json");
+//   })
+//   .then(text => {
+//     console.log(text);
+//   })
+//   .catch(error => console.log(error));
+
+// 8. Jak wiadomo świat JS jest bardzo rozbudowany i nie trzeba za każdym razem tworzyć
+// od nowa konstrukcji asynchronicznych żądań do serwera.
+// Są od tego biblioteki😊
+// Na stronie https://npmjs.org
+// możemy znaleźć dużo różnych implementacji bibliotek które udostępniają już gotowe obiekty
+// przystosowane do Promise, np.:
+
+// axios (https://www.npmjs.com/package/axios)
+// request-promise (https://www.npmjs.com/package/request-promise)
+
+// Zadaniem jest wykorzystanie biblioteki axios.
+// Z zadania 7 podmieńmy request wraz z naszymi Promise na użycie biblioteki axios.
+
+// 9. Zamieńmy również z zadania 8 opakowanie funkcji writeFile która została zaimplementowana
+// na wbudowany mechanizm w NodeJS zamieniający naszą funkcję zwrotną na Promise.
+// W tym celu powinniśmy wykorzystać wbudowany moduł util i funkcję util.promisify(link do opisu)
+
+const fs = require("fs");
+const util = require("util");
+const axios = require("axios");
+
+const id = "2";
+const userUrl = `https://jsonplaceholder.typicode.com/users/${id}`;
+const fileName = "./weather.json";
+
+const primisifiedWriteFile = util.promisify(fs.writeFile);
+
+axios
+  .get(userUrl)
+  .then(userResponse => {
+    const lat = userResponse.data.address.geo.lat;
+    const lng = userResponse.data.address.geo.lng;
+    console.log(userResponse.data.address.geo);
+    console.log(lat, lng);
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?appid=0ed761300a2725ca778c07831ae64d6e&lat=${lat}&lon=${lng}`;
+    return axios.get(weatherUrl);
   })
-  .catch(error => console.log(error))
-  .finally(() => {
-    console.log("Koniec przetwarzania!");
+  .then(weatherResponse => {
+    console.log(weatherResponse.data);
+    return primisifiedWriteFile(fileName, JSON.stringify(weatherResponse.data));
+  })
+  .then(() => {
+    console.log("File saved");
+  })
+  .catch(error => {
+    console.log(error);
   });
+
+// Pytania:
+// 1. Jeśli wystąpił error, to jak można okreslić, z którego .then pochodził?
+// 2. Z prezentacji łańcuch .then bez return: jak to działa?
