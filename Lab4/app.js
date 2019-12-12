@@ -376,4 +376,3 @@ axios
 
 // Pytania:
 // 1. Jeśli wystąpił error, to jak można okreslić, z którego .then pochodził?
-// 2. Z prezentacji łańcuch .then bez return: jak to działa?
