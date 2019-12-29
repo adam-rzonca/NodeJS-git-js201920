@@ -1,4 +1,4 @@
-// 9. Stwórzmy aplikację która pobierze informacje o użytkowniku oraz jego pierwszym
+// 10. Stwórzmy aplikację która pobierze informacje o użytkowniku oraz jego pierwszym
 // na liście albumie i przypisanych do niego zdjęciach.
 
 // Z pobranego użytkownika wyświetlmy na ekranie nazwę użytkownika.
@@ -11,7 +11,7 @@
 // endpoint do zdjęć: https://jsonplaceholder.typicode.com/photos?albumId=1
 // Pamiętajmy również o tym aby obsłużyć błędy zapytania łapiąc występujący wyjątek (.catch())
 
-// 10. Dodajmy do zadania 10 zapis do pliku listy pobranych zdjęć.
+// 11. Dodajmy do zadania 10 zapis do pliku listy pobranych zdjęć.
 // Plik powinniśmy nazwać zgodnie z nazwą albumu.
 // Jeżeli nazwa albumu przekracza 10 znaków powinniśmy skrócić nazwę naszego pliku.
 
