@@ -1,3 +1,6 @@
+const MongoClient = require("mongodb").MongoClient;
+const url = "mongodb://localhost:27017/QuotesDB";
+
 const addTaskHandler = argv => {
   //console.log(argv);
   const author = argv.author;
@@ -15,6 +18,36 @@ const addTaskHandler = argv => {
   }
 
   console.log(author, quote, tag);
+
+  insertQuote(author, quote, tag);
+};
+
+const insertQuote = async (author, quote, tag) => {
+  const client = await MongoClient.connect(url, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  }).catch(error => {
+    console.log(error.message);
+  });
+
+  if (!client) {
+    return;
+  }
+
+  try {
+    const data = { author: author, quote: quote, tag: tag || "" };
+
+    const result = await client
+      .db()
+      .collection("Quotes")
+      .insertOne(data);
+
+    console.log(result.ops[0]);
+  } catch (error) {
+    console.log(error.message);
+  } finally {
+    client.close();
+  }
 };
 
 const builderHandler = yargs => {

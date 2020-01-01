@@ -1,29 +1,27 @@
 Struktura rekordu:
 {
-	"id": number,
+	"_id": number, //Autonumber z MongoDB
 	"author": string,
 	"quote": string,
-	"group": string,
+	"tag": string,
 	"randomDisplayCount", number
 }
 
 Parametry:
 1:
--add -author -quote [group]
--remove
--display <id|all|group>
+add --author --quote [--tag]
+remove --id
+display <--id|--all|--tag>
 
 2:
--random
+random
 
 3:
--edit -id Co najmniej jeden z parametów: -author -quote -group
+edit <--id> Co najmniej jeden z parametów: --author --quote --tag
 
 4:
--getr [add]
+getr [--add]
 
-
--help 
 
 Aliasy:
 
