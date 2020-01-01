@@ -26,3 +26,4 @@ getr [--add]
 Aliasy:
 
 Silnik bazy
+https://mongodb.github.io/node-mongodb-native/3.4/api/Collection.html#findOne
