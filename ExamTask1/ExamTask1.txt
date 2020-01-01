@@ -1,0 +1,30 @@
+Struktura rekordu:
+{
+	"id": number,
+	"author": string,
+	"quote": string,
+	"group": string,
+	"randomDisplayCount", number
+}
+
+Parametry:
+1:
+-add -author -quote [group]
+-remove
+-display <id|all|group>
+
+2:
+-random
+
+3:
+-edit -id Co najmniej jeden z parametów: -author -quote -group
+
+4:
+-getr [add]
+
+
+-help 
+
+Aliasy:
+
+Silnik bazy
