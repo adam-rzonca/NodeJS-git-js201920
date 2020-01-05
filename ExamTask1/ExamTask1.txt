@@ -10,8 +10,8 @@ Struktura rekordu:
 Parametry:
 1:
 * add --author --quote [--tag]
-remove --id
-display <--id|--all|--tag>
+* remove --id
+* display <--id|--all|--tag>
 
 2:
 * random

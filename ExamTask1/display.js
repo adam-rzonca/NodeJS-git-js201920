@@ -1,26 +1,33 @@
 const myMongoClient = require("./myMongo").myMongoClient;
+const ObjectID = require("./myMongo").ObjectID;
 
 const addTaskHandler = argv => {
-  const id = argv.id;
+  let id = argv.id;
   const tag = argv.tag;
+  let filter;
 
-  if (id === "") {
-    console.log("Enter quote id!");
-    return;
-  }
+  if ("id" in argv) {
+    if (id === "") {
+      console.log("Enter quote id!");
+      return;
+    }
 
-  if (tag === "") {
-    console.log("Enter quotes tag!");
-    return;
-  }
+    // Sprawdzamy, czy id ma odpowiedni format
+    try {
+      id = ObjectID(id);
+    } catch (error) {
+      console.log(error.message);
+      return;
+    }
 
-  if (id) {
-    myMongoClient({ _id: id }, displayData);
-  } else if (tag) {
-    myMongoClient({ tag: tag }, displayData);
+    filter = { _id: id };
+  } else if ("tag" in argv) {
+    filter = { tag: tag };
   } else {
-    myMongoClient({}, displayData);
+    filter = {};
   }
+
+  myMongoClient(filter, displayData);
 };
 
 const displayData = async (collection, filter) => {
@@ -33,21 +40,15 @@ const displayData = async (collection, filter) => {
     return;
   }
 
-  result.forEach(quote => {
+  await result.forEach(quote => {
     console.log(quote);
   });
+
+  await console.log(count, count === 1 ? "record" : "records", "found!");
 };
 
 const builderHandler = yargs => {
   return yargs
-    .option("id", {
-      demandOption: false, // Parametr opcjonalny
-      describe: "Displayed quote id",
-      type: "string",
-      group: "Display options",
-      requiresArg: true, // Parametr musi mieć wartość po nazwie
-      conflicts: ["all", "tag"] // Jeśli ten parametr jest ustawiony, to nie może być pozostałych
-    })
     .option("all", {
       demandOption: false, // Parametr opcjonalny
       describe: "Display all quotes from database [default]",
@@ -55,6 +56,14 @@ const builderHandler = yargs => {
       group: "Display options",
       requiresArg: false,
       conflicts: ["id", "tag"] // Jeśli ten parametr jest ustawiony, to nie może być pozostałych
+    })
+    .option("id", {
+      demandOption: false, // Parametr opcjonalny
+      describe: "Displayed quote id",
+      type: "string",
+      group: "Display options",
+      requiresArg: true, // Parametr musi mieć wartość po nazwie
+      conflicts: ["all", "tag"] // Jeśli ten parametr jest ustawiony, to nie może być pozostałych
     })
     .option("tag", {
       demandOption: false, // Parametr opcjonalny
