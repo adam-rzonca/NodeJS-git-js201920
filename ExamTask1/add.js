@@ -1,8 +1,6 @@
-const MongoClient = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017/QuotesDB";
+const myMongoClient = require("./myMongo").myMongoClient;
 
 const addTaskHandler = argv => {
-  //console.log(argv);
   const author = argv.author;
   const quote = argv.quote;
   const tag = argv.tag;
@@ -17,37 +15,21 @@ const addTaskHandler = argv => {
     return;
   }
 
-  console.log(author, quote, tag);
-
-  insertQuote(author, quote, tag);
-};
-
-const insertQuote = async (author, quote, tag) => {
-  const client = await MongoClient.connect(url, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-  }).catch(error => {
-    console.log(error.message);
-  });
-
-  if (!client) {
+  if (tag === "") {
+    console.log("Enter tag!");
     return;
   }
 
-  try {
-    const data = { author: author, quote: quote, tag: tag || "" };
+  const data = { author: author, quote: quote, tag: tag || "" };
 
-    const result = await client
-      .db()
-      .collection("Quotes")
-      .insertOne(data);
+  myMongoClient(data, insertQuote);
+};
 
-    console.log(result.ops[0]);
-  } catch (error) {
-    console.log(error.message);
-  } finally {
-    client.close();
-  }
+const insertQuote = async (collection, data) => {
+  const result = await collection.insertOne(data);
+
+  // Wypisujemy utworzony rekord
+  console.log(result.ops[0]);
 };
 
 const builderHandler = yargs => {
@@ -82,3 +64,31 @@ module.exports = {
   handler: addTaskHandler,
   aliases: ["a"]
 };
+
+// const insertQuote = async (author, quote, tag) => {
+//   const url = "mongodb://localhost:27017/QuotesDB";
+//   const dbName = "Quotes";
+//   const connectOptions = {
+//     useUnifiedTopology: true,
+//     useNewUrlParser: true
+//   };
+
+//   let client;
+
+//   try {
+//     client = await MongoClient.connect(url, connectOptions);
+
+//     const collection = await client.db().collection(dbName);
+
+//     const result = await collection.insertOne(data);
+
+//     // Wypisujemy utworzony rekord
+//     console.log(result.ops[0]);
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+
+//   if (client) {
+//     client.close();
+//   }
+// };

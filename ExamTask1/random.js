@@ -1,42 +1,24 @@
-const MongoClient = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017/QuotesDB";
+const myMongoClient = require("./myMongo").myMongoClient;
 
 const randomTaskHandler = argv => {
-  randomQuote();
+  const data = {};
+
+  myMongoClient(data, randomQuote);
 };
 
-const randomQuote = async () => {
-  const client = await MongoClient.connect(url, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-  }).catch(error => {
-    console.log(error.message);
-  });
+const randomQuote = async (collection, data) => {
+  const count = await collection.countDocuments();
 
-  if (!client) {
-    return;
-  }
+  const skipCount = Math.floor(Math.random() * count);
 
-  try {
-    const collection = await client.db().collection("Quotes");
+  // Bierzemy pierwszy element z tablic jednoelementowej
+  const [quote] = await collection
+    .find()
+    .limit(1)
+    .skip(skipCount)
+    .toArray();
 
-    const count = await collection.countDocuments();
-
-    const skipCount = Math.floor(Math.random() * count);
-
-    // Bierzemy pierwszy element z tablic jednoelementowej
-    const [quote] = await collection
-      .find()
-      .limit(1)
-      .skip(skipCount)
-      .toArray();
-
-    console.log(quote);
-  } catch (error) {
-    console.log(error.message);
-  } finally {
-    client.close();
-  }
+  console.log(quote);
 };
 
 module.exports = {
@@ -45,3 +27,39 @@ module.exports = {
   handler: randomTaskHandler,
   aliases: ["r"]
 };
+
+// const randomQuote = async () => {
+//   const url = "mongodb://localhost:27017/QuotesDB";
+//   const dbName = "Quotes";
+//   const connectOptions = {
+//     useUnifiedTopology: true,
+//     useNewUrlParser: true
+//   };
+
+//   let client;
+
+//   try {
+//     client = await MongoClient.connect(url, connectOptions);
+
+//     const collection = await client.db().collection(dbName);
+
+//     const count = await collection.countDocuments();
+
+//     const skipCount = Math.floor(Math.random() * count);
+
+//     // Bierzemy pierwszy element z tablic jednoelementowej
+//     const [quote] = await collection
+//       .find()
+//       .limit(1)
+//       .skip(skipCount)
+//       .toArray();
+
+//     console.log(quote);
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+
+//   if (client) {
+//     client.close();
+//   }
+// };
