@@ -44,7 +44,7 @@ const displayData = async (collection, filter) => {
     console.log(quote);
   });
 
-  await console.log(count, count === 1 ? "record" : "records", "found!");
+  console.log(count, count === 1 ? "record" : "records", "found!");
 };
 
 const builderHandler = yargs => {

@@ -23,18 +23,19 @@ const addTaskHandler = argv => {
 };
 
 const removeData = async (collection, filter) => {
-  const result = await collection.find(filter);
+  let result = await collection.find(filter);
 
-  const count = await result.count();
+  let count = await result.count();
 
   if (!count) {
     console.log("Data not found!");
     return;
   }
 
-  await collection.deleteOne(filter);
+  result = await collection.deleteOne(filter);
+  count = result.deletedCount;
 
-  await console.log("1 record deleted!");
+  console.log(count, count === 1 ? "record" : "records", "deleted!");
 };
 
 const builderHandler = yargs => {
