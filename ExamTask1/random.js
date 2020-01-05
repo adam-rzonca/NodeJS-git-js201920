@@ -6,7 +6,7 @@ const randomTaskHandler = argv => {
   myMongoClient(data, randomQuote);
 };
 
-const randomQuote = async (collection, data) => {
+const randomQuote = async collection => {
   const count = await collection.countDocuments();
 
   const skipCount = Math.floor(Math.random() * count);

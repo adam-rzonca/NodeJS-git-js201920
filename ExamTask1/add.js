@@ -42,18 +42,18 @@ const builderHandler = yargs => {
       requiresArg: true // Parametr musi mieć wartość po nazwie
     })
     .option("quote", {
-      demandOption: true,
+      demandOption: true, // Parametr wymagany
       describe: "Quote to be added",
       type: "string",
       group: "Add options",
-      requiresArg: true
+      requiresArg: true // Parametr musi mieć wartość po nazwie
     })
     .option("tag", {
       demandOption: false, // Parametr opcjonalny
       describe: "Quote tag",
       type: "string",
       group: "Add options",
-      requiresArg: true
+      requiresArg: true // Parametr musi mieć wartość po nazwie
     });
 };
 
