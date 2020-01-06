@@ -17,13 +17,10 @@ Parametry:
 * random
 
 3:
-edit <--id> Co najmniej jeden z parametów: --author --quote --tag
+* edit <--id> Co najmniej jeden z parametów: --author --quote --tag
 
 4:
 getr [--add]
 
 
-Aliasy:
-
-Silnik bazy
-https://mongodb.github.io/node-mongodb-native/3.4/api/Collection.html#findOne
+Licznik randomowych wystąpień

@@ -1,10 +1,10 @@
 const myMongoClient = require("./myMongo").myMongoClient;
 const ObjectID = require("./myMongo").ObjectID;
 
-const addTaskHandler = argv => {
+const displayTaskHandler = argv => {
   let id = argv.id;
   const tag = argv.tag;
-  let filter;
+  let query;
 
   if ("id" in argv) {
     if (id === "") {
@@ -20,18 +20,18 @@ const addTaskHandler = argv => {
       return;
     }
 
-    filter = { _id: id };
+    query = { _id: id };
   } else if ("tag" in argv) {
-    filter = { tag: tag };
+    query = { tag: tag };
   } else {
-    filter = {};
+    query = {};
   }
 
-  myMongoClient(filter, displayData);
+  myMongoClient(query, displayData);
 };
 
-const displayData = async (collection, filter) => {
-  const result = await collection.find(filter);
+const displayData = async (collection, query) => {
+  const result = collection.find(query);
 
   const count = await result.count();
 
@@ -45,6 +45,21 @@ const displayData = async (collection, filter) => {
   });
 
   console.log(count, count === 1 ? "record" : "records", "found!");
+
+  // const result = await collection.find(query);
+
+  // const count = await result.count();
+
+  // if (!count) {
+  //   console.log("Data not found!");
+  //   return;
+  // }
+
+  // await result.forEach(quote => {
+  //   console.log(quote);
+  // });
+
+  // console.log(count, count === 1 ? "record" : "records", "found!");
 };
 
 const builderHandler = yargs => {
@@ -79,6 +94,6 @@ module.exports = {
   command: "display",
   describe: "Display quote from database",
   builder: builderHandler,
-  handler: addTaskHandler,
+  handler: displayTaskHandler,
   aliases: ["d"]
 };

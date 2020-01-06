@@ -1,7 +1,7 @@
 const myMongoClient = require("./myMongo").myMongoClient;
 const ObjectID = require("./myMongo").ObjectID;
 
-const addTaskHandler = argv => {
+const removeTaskHandler = argv => {
   let id = argv.id;
 
   if (id === "") {
@@ -17,13 +17,13 @@ const addTaskHandler = argv => {
     return;
   }
 
-  const filter = { _id: id };
+  const query = { _id: id };
 
-  myMongoClient(filter, removeData);
+  myMongoClient(query, removeData);
 };
 
-const removeData = async (collection, filter) => {
-  let result = await collection.find(filter);
+const removeData = async (collection, query) => {
+  let result = collection.find(query);
 
   let count = await result.count();
 
@@ -32,7 +32,7 @@ const removeData = async (collection, filter) => {
     return;
   }
 
-  result = await collection.deleteOne(filter);
+  result = await collection.deleteOne(query);
   count = result.deletedCount;
 
   console.log(count, count === 1 ? "record" : "records", "deleted!");
@@ -52,6 +52,6 @@ module.exports = {
   command: "remove",
   describe: "Remove quote from database",
   builder: builderHandler,
-  handler: addTaskHandler,
+  handler: removeTaskHandler,
   aliases: ["rm"]
 };

@@ -2,11 +2,13 @@ const addCommand = require("./add");
 const randomCommand = require("./random");
 const displayCommand = require("./display");
 const removeCommand = require("./remove");
+const editCommand = require("./edit");
 
 require("yargs")
   .usage("Usage: $0 <command>")
   .command(addCommand)
   .command(displayCommand)
+  .command(editCommand)
   .command(randomCommand)
   .command(removeCommand)
   .demandCommand() // Jeśli nie podamy żadnej komendy, wyświetli nam Usage i Help
