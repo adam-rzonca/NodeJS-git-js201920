@@ -20,7 +20,7 @@ Parametry:
 * edit <--id> Co najmniej jeden z parametów: --author --quote --tag
 
 4:
-getr [--add]
+* getr [--add]
 
 
 Licznik randomowych wystąpień

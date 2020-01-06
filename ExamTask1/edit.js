@@ -27,6 +27,8 @@ const editTaskHandler = argv => {
   if (quote) newValues.quote = quote;
   if (tag) newValues.tag = tag;
 
+  console.log(newValues);
+
   const data = { query: query, newValues: newValues };
 
   myMongoClient(data, editData);
@@ -46,10 +48,6 @@ const editData = async (collection, data) => {
   count = result.modifiedCount;
 
   console.log(count, count === 1 ? "record" : "records", "modified!");
-  //   result = await collection.deleteOne(query);
-  //   count = result.deletedCount;
-
-  //   console.log(count, count === 1 ? "record" : "records", "deleted!");
 };
 
 const builderHandler = yargs => {

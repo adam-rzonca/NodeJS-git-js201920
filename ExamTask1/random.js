@@ -1,4 +1,5 @@
 const myMongoClient = require("./myMongo").myMongoClient;
+const ObjectID = require("./myMongo").ObjectID;
 
 const randomTaskHandler = argv => {
   const data = {};
@@ -7,7 +8,7 @@ const randomTaskHandler = argv => {
 };
 
 const randomQuote = async collection => {
-  const count = await collection.countDocuments();
+  let count = await collection.countDocuments();
 
   const skipCount = Math.floor(Math.random() * count);
 
@@ -18,7 +19,24 @@ const randomQuote = async collection => {
     .skip(skipCount)
     .toArray();
 
-  console.log(quote);
+  if (!quote) {
+    console.log("Data not found!");
+    return;
+  }
+
+  const id = ObjectID(quote._id);
+  const randomDisplayCount = quote.randomDisplayCount + 1;
+
+  const query = { _id: id };
+  const data = { randomDisplayCount: randomDisplayCount };
+
+  // Aktualizujemy licznik randomowych wyświetleń
+  let result = await collection.updateOne(query, { $set: data });
+
+  // I dopiero wyświetlamy
+  result = await collection.findOne(query);
+
+  console.log(result);
 };
 
 module.exports = {
@@ -27,39 +45,3 @@ module.exports = {
   handler: randomTaskHandler,
   aliases: ["r"]
 };
-
-// const randomQuote = async () => {
-//   const url = "mongodb://localhost:27017/QuotesDB";
-//   const dbName = "Quotes";
-//   const connectOptions = {
-//     useUnifiedTopology: true,
-//     useNewUrlParser: true
-//   };
-
-//   let client;
-
-//   try {
-//     client = await MongoClient.connect(url, connectOptions);
-
-//     const collection = await client.db().collection(dbName);
-
-//     const count = await collection.countDocuments();
-
-//     const skipCount = Math.floor(Math.random() * count);
-
-//     // Bierzemy pierwszy element z tablic jednoelementowej
-//     const [quote] = await collection
-//       .find()
-//       .limit(1)
-//       .skip(skipCount)
-//       .toArray();
-
-//     console.log(quote);
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-
-//   if (client) {
-//     client.close();
-//   }
-// };

@@ -20,7 +20,12 @@ const addTaskHandler = argv => {
     return;
   }
 
-  const data = { author: author, quote: quote, tag: tag || "" };
+  const data = {
+    author: author,
+    quote: quote,
+    tag: tag || "",
+    randomDisplayCount: 0
+  };
 
   myMongoClient(data, insertQuote);
 };
@@ -64,31 +69,3 @@ module.exports = {
   handler: addTaskHandler,
   aliases: ["a"]
 };
-
-// const insertQuote = async (author, quote, tag) => {
-//   const url = "mongodb://localhost:27017/QuotesDB";
-//   const dbName = "Quotes";
-//   const connectOptions = {
-//     useUnifiedTopology: true,
-//     useNewUrlParser: true
-//   };
-
-//   let client;
-
-//   try {
-//     client = await MongoClient.connect(url, connectOptions);
-
-//     const collection = await client.db().collection(dbName);
-
-//     const result = await collection.insertOne(data);
-
-//     // Wypisujemy utworzony rekord
-//     console.log(result.ops[0]);
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-
-//   if (client) {
-//     client.close();
-//   }
-// };

@@ -45,21 +45,6 @@ const displayData = async (collection, query) => {
   });
 
   console.log(count, count === 1 ? "record" : "records", "found!");
-
-  // const result = await collection.find(query);
-
-  // const count = await result.count();
-
-  // if (!count) {
-  //   console.log("Data not found!");
-  //   return;
-  // }
-
-  // await result.forEach(quote => {
-  //   console.log(quote);
-  // });
-
-  // console.log(count, count === 1 ? "record" : "records", "found!");
 };
 
 const builderHandler = yargs => {
