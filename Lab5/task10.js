@@ -13,37 +13,52 @@
 const args = require("yargs").argv;
 const axios = require("axios");
 
-const getUser = async id => {
-  const url = `https://jsonplaceholder.typicode.com/users/${id}`;
+const getUser = async UserId => {
+  const url = `https://jsonplaceholder.typicode.com/users/${UserId}`;
 
   const result = await axios.get(url);
 
   return result.data;
 };
 
-const getUserPosts = async id => {
-  const url = `https://jsonplaceholder.typicode.com/posts?userId=${id}`;
+const getUserPosts = async UserId => {
+  const url = `https://jsonplaceholder.typicode.com/posts?userId=${UserId}`;
 
   const result = await axios.get(url);
 
   return result.data;
 };
 
-const getUserComments = async id => {
-  // ???
+const getPostComments = async PostId => {
+  const url = `https://jsonplaceholder.typicode.com/comments?postId=${PostId}`;
+
+  const result = await axios.get(url);
+
+  return result.data;
 };
 
-const getUserData = async id => {
+const getUserData = async UserId => {
   try {
-    const user = await getUser(id);
+    const user = await getUser(UserId);
     console.log("User:", user.name);
 
     const posts = await getUserPosts(user.id);
     console.log("User posts number:", posts.length);
+
+    // Tablica tablic komentarzy do postów
+    const postsCommentsArray = await Promise.all(
+      posts.map(post => {
+        return getPostComments(post.id);
+      })
+    );
+
+    // W uproszczeniu: flat zrobi jednowymairową tablicę z tablicy dwuwymiarowej
+    const commentsCount = postsCommentsArray.flat().length;
+    console.log("User posts comments number:", commentsCount);
   } catch (error) {
     console.log("Error:", error.message);
   }
 };
 
-const id = args.id;
-getUserData(id);
+const Userid = args.id;
+getUserData(Userid);
