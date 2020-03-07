@@ -1,0 +1,5 @@
+[
+  { "id": 1, "task": "Task1", "status": false },
+  { "id": 2, "task": "Task2", "status": false },
+  { "id": 3, "task": "Task2", "status": true }
+]

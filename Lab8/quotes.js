@@ -1,9 +1,9 @@
 // 3. Stwórzmy pierwsze pełne REST API, które pozwoli nam na zarządzanie cytatami (klasyczny CRUD).
-// wyświetlane wszystkich cytatów (GET)
-// wyświetlane konkretnego cytatu (GET)
-// dodawanie cytatu (POST)
-// usunie cytatu (DELETE)
-// edytowanie cytatu (PUT)
+// * wyświetlane wszystkich cytatów (GET)
+// * wyświetlane konkretnego cytatu (GET)
+// * dodawanie cytatu (POST)
+// * usunie cytatu (DELETE)
+// * edytowanie cytatu (PUT)
 
 let quotes = require("./quotes.json");
 
@@ -13,7 +13,12 @@ const router = express.Router();
 let counter = quotes.length;
 
 router.get("/", (req, res) => {
-  res.send(quotes);
+  const status = req.query;
+
+  if (!status) {
+    res.send(quotes);
+  } else {
+  }
 });
 
 router.get("/:id?", (req, res) => {
