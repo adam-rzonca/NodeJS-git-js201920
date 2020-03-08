@@ -13,12 +13,7 @@ const router = express.Router();
 let counter = quotes.length;
 
 router.get("/", (req, res) => {
-  const status = req.query;
-
-  if (!status) {
-    res.send(quotes);
-  } else {
-  }
+  res.send(quotes);
 });
 
 router.get("/:id?", (req, res) => {
