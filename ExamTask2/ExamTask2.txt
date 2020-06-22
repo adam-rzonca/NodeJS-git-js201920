@@ -1,0 +1,49 @@
+Baza: mongo.db
+
+Ad:
+{
+	"_id": number, //Autonumber z MongoDB
+	"username": string // Baza userów na sztywno zrobiona
+	"categories": [string]
+	"text": string
+	"price": number
+	"add_time": date
+}	
+
+User:
+{ 
+	"username": string
+	"password": string
+}
+
+
+
+* 0. Baza MongoDB
+	* User
+	* Ad
+
+1. Podstawą zaliczenia jest wykonanie najprostszego REST API pozwalającego na zarządzanie tablicą ogłoszeń. 
+	Dodawanie 
+		Walidacja
+			User
+			Minimum jedna kategoria
+			Niepusty tekst
+			Cena: pusta lub dodatnia liczba z dwoma miejscami po przecinku
+
+	Usuwanie
+	
+	Modyfikowanie
+		Walidacja
+			Minimum jedna kategoria
+			Niepusty tekst
+			Format ceny
+			
+	Wyświetlanie wszystkich ogłoszeń 
+	
+	Wyświetlanie pojedynczego ogłoszenia
+
+2. Aplikacja powinna pozawalać na filtrowanie ogłoszeń po szukanym tekście, cenie, dacie dodania, autorze, itp.
+
+3. Usuwanie jak i modyfikowanie ogłoszeń powinno być zabezpieczone hasłem (np. middleware z hasłem na sztywno)
+
+4 Możliwość przypięcia wielu kategorii do ogłoszenia.
