@@ -24,19 +24,19 @@ User:
 
 1. Podstawą zaliczenia jest wykonanie najprostszego REST API pozwalającego na zarządzanie tablicą ogłoszeń. 
 	* Dodawanie 
-		Walidacja
-			User
-			Minimum jedna kategoria
-			Niepusty tekst
-			Cena: pusta lub dodatnia liczba z dwoma miejscami po przecinku
+		* Walidacja
+			* User
+			* Minimum jedna kategoria
+			* Niepusty tekst
+			* Cena: brak lub lub dodatnia liczba z dwoma miejscami po przecinku
 
-	Usuwanie
+	* Usuwanie
 	
-	Modyfikowanie
-		Walidacja
-			Minimum jedna kategoria
-			Niepusty tekst
-			Format ceny
+	* Modyfikowanie
+		* Walidacja
+			* Minimum jedna kategoria
+			* Niepusty tekst
+			* Format ceny
 			
 	* Wyświetlanie wszystkich ogłoszeń 
 	* Wyświetlanie pojedynczego ogłoszenia
