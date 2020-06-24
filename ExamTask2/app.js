@@ -7,6 +7,9 @@ const Joi = require("joi");
 
 const url = "mongodb://localhost:27017/AdsDB";
 
+let adsCollection;
+let usersCollection;
+
 const connectOptions = {
   useUnifiedTopology: true,
   useNewUrlParser: true,
@@ -25,28 +28,54 @@ const adPutSchema = Joi.object().keys({
   price: Joi.number().greater(0).precision(2), // Opcjonalny, większy od zera i z dwoma miejcami po przecinku
 });
 
+const authMiddleware = async (req, res, next) => {
+  try {
+    const { authorization } = req.headers;
+
+    if (!authorization) {
+      res.sendStatus(401);
+      return;
+    }
+
+    const [username, password] = authorization.split(":");
+    const user = await usersCollection.findOne({ username });
+
+    if (!user) {
+      res.sendStatus(401);
+      return;
+    }
+
+    if (user.password === password) {
+      next();
+    } else {
+      res.sendStatus(401);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 (async () => {
   try {
     const client = await MongoClient.connect(url, connectOptions);
 
     console.log("Connected to Database...");
 
-    const adsCollection = await client.db().collection("Ads");
-    const usersCollection = await client.db().collection("Users");
+    adsCollection = await client.db().collection("Ads");
+    usersCollection = await client.db().collection("Users");
 
     app.use(bodyParser.json());
 
-    app.put("/:id", async (req, res, next) => {
+    app.put("/:id", authMiddleware, async (req, res, next) => {
       try {
-        const filter = { _id: ObjectID(req.params.id) };
-
         // Walidacja body
         const { error } = Joi.validate(req.body, adPutSchema);
-
         if (error) {
           res.status(400).send(error.details);
           return;
         }
+
+        const filter = { _id: ObjectID(req.params.id) };
         const data = { $set: { ...req.body } };
 
         const result = await adsCollection.findOneAndUpdate(filter, data);
@@ -60,7 +89,7 @@ const adPutSchema = Joi.object().keys({
       }
     });
 
-    app.delete("/:id", async (req, res, next) => {
+    app.delete("/:id", authMiddleware, async (req, res, next) => {
       try {
         const result = await adsCollection.deleteOne({
           _id: ObjectID(req.params.id),
@@ -87,15 +116,17 @@ const adPutSchema = Joi.object().keys({
         }
 
         // Walidacja usera
-        const result = await usersCollection.findOne({
+        let result = await usersCollection.findOne({
           username: req.body.username,
         });
+
         if (!result) {
           res.status(400).send("Invalid username");
           return;
         }
 
         const data = { ...req.body, add_time: new Date() };
+
         await adsCollection.insertOne(data);
         res.status(201).send("Created");
       } catch (error) {
@@ -114,12 +145,12 @@ const adPutSchema = Joi.object().keys({
 
     app.get("/:id", async (req, res, next) => {
       try {
-        const cursor = await adsCollection
-          .find({ _id: ObjectID(req.params.id) })
-          .toArray();
+        const result = await adsCollection.findOne({
+          _id: ObjectID(req.params.id),
+        });
 
-        if (cursor.length) {
-          res.status(200).send(cursor);
+        if (result) {
+          res.status(200).send(result);
         } else {
           res.sendStatus(404);
         }
