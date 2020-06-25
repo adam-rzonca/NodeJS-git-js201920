@@ -22,7 +22,7 @@ User:
 	* User
 	* Ad
 
-1. Podstawą zaliczenia jest wykonanie najprostszego REST API pozwalającego na zarządzanie tablicą ogłoszeń. 
+* 1. Podstawą zaliczenia jest wykonanie najprostszego REST API pozwalającego na zarządzanie tablicą ogłoszeń. 
 	* Dodawanie 
 		* Walidacja
 			* User
@@ -41,8 +41,8 @@ User:
 	* Wyświetlanie wszystkich ogłoszeń 
 	* Wyświetlanie pojedynczego ogłoszenia
 
-2. Aplikacja powinna pozawalać na filtrowanie ogłoszeń po szukanym tekście, cenie, dacie dodania, autorze, itp.
+* 2. Aplikacja powinna pozawalać na filtrowanie ogłoszeń po szukanym tekście, cenie, dacie dodania, autorze, itp.
 
-3. Usuwanie jak i modyfikowanie ogłoszeń powinno być zabezpieczone hasłem (np. middleware z hasłem na sztywno)
+* 3. Usuwanie jak i modyfikowanie ogłoszeń powinno być zabezpieczone hasłem (np. middleware z hasłem na sztywno)
 
 * 4 Możliwość przypięcia wielu kategorii do ogłoszenia.

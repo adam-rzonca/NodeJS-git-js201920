@@ -4,6 +4,8 @@ const app = express();
 const MongoClient = require("mongodb").MongoClient;
 const ObjectID = require("mongodb").ObjectID;
 const Joi = require("joi");
+const moment = require("moment");
+const { adPostSchema, adPutSchema, adQuerySchema } = require("./schema.js");
 
 const url = "mongodb://localhost:27017/AdsDB";
 
@@ -14,19 +16,6 @@ const connectOptions = {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 };
-
-const adPostSchema = Joi.object().keys({
-  username: Joi.string().required(), // Wymagany, string
-  categories: Joi.array().items(Joi.string().required()), //Wymagany, tablica stringów z przynajmniej jednym elelemntem
-  text: Joi.string().required(), // Wymagany, string
-  price: Joi.number().greater(0).precision(2), // Opcjonalny, większy od zera i z dwoma miejcami po przecinku
-});
-
-const adPutSchema = Joi.object().keys({
-  categories: Joi.array().items(Joi.string().required()), //Wymagany, tablica stringów z przynajmniej jednym elelemntem
-  text: Joi.string().required(), // Wymagany, string
-  price: Joi.number().greater(0).precision(2), // Opcjonalny, większy od zera i z dwoma miejcami po przecinku
-});
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -80,7 +69,7 @@ const authMiddleware = async (req, res, next) => {
 
         const result = await adsCollection.findOneAndUpdate(filter, data);
         if (result.lastErrorObject.updatedExisting) {
-          res.status(200).send("Updated");
+          res.status(202).send("Updated");
         } else {
           res.sendStatus(404);
         }
@@ -96,7 +85,7 @@ const authMiddleware = async (req, res, next) => {
         });
 
         if (result.deletedCount) {
-          res.status(200).send("Deleted");
+          res.status(202).send("Deleted");
         } else {
           res.sendStatus(404);
         }
@@ -125,7 +114,7 @@ const authMiddleware = async (req, res, next) => {
           return;
         }
 
-        const data = { ...req.body, add_time: new Date() };
+        const data = { ...req.body, add_time: moment().format("YYYY-MM-DD") };
 
         await adsCollection.insertOne(data);
         res.status(201).send("Created");
@@ -134,9 +123,44 @@ const authMiddleware = async (req, res, next) => {
       }
     });
 
+    // https://expressjs.com/en/5x/api.html#req.query
+    // Tablicę w query string budujemy w nastepujący sposób:
+    // GET /shoes?color[]=blue&color[]=black&color[]=red
+    // req.query.color => [blue, black, red]
+    // [] po parametrze sprawi, że jeśli będzie tylko jeden parametr
+    // to i tak zostanie zamieniony na tablicę:
+    // GET /shoes?color[]=blue
+    // req.query.color => [blue]
+    // Co nie zdażyłoby się, gdyby query string zbudować w nastepuący sposób:
+    // GET /shoes?color=blue&color=black&color=red
+    // req.query.color => [blue, black, red]
+    // !!! ALE: !!!
+    // GET /shoes?color=blue
+    // req.query.color => blue
     app.get("/", async (req, res, next) => {
       try {
-        const cursor = await adsCollection.find().toArray();
+        const query = req.query;
+        console.log(query);
+
+        const { error } = Joi.validate(query, adQuerySchema);
+        if (error) {
+          res.status(400).send(error.details);
+          return;
+        }
+
+        let filter = query;
+
+        if (filter.hasOwnProperty("categories")) {
+          filter.categories = { $all: filter.categories };
+        }
+
+        if (filter.hasOwnProperty("text")) {
+          filter.text = { $regex: filter.text, $options: "i" };
+        }
+
+        console.log(filter);
+
+        const cursor = await adsCollection.find(filter).toArray();
         res.status(200).send(cursor);
       } catch (error) {
         next(error);
